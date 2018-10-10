@@ -238,7 +238,7 @@ metadata:
   name: ccd-importer
   namespace: ccd
 data:
-  WAIT_HOSTS: 'ccd-user-profile-api, ccd-definition-store-api, service-auth-provider-api, ccd-api-gateway, idam-api'
+  WAIT_HOSTS: 'ccd-user-profile-api:80, ccd-definition-store-api:80, service-auth-provider-api:80, ccd-api-gateway:80, idam-api:80'
   VERBOSE: '${VERBOSE:-false}'
   WAIT_HOSTS_TIMEOUT: '600'
 ---
@@ -441,6 +441,13 @@ spec:
         ports:
         - containerPort: 4453
           name: http
+        readinessProbe:
+          httpGet:
+            port: 4453
+            path: /health
+          initialDelaySeconds: 60
+          successThreshold: 1
+          failureThreshold: 3
         imagePullPolicy: Always
 ---
 #
@@ -731,7 +738,7 @@ spec:
     spec:
       containers:
       - name: ccd-importer
-        image: hmctssandbox.azurecr.io/hmcts/bulk-scan-ccd-importer
+        image: hmctssandbox.azurecr.io/hmcts/bulk-scan-ccd-importer:v0.1
         envFrom:
           - configMapRef:
               name: ccd-importer
