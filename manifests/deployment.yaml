@@ -230,6 +230,19 @@ data:
   CASE_WORKER_ROLES: 'caseworker-sscs'
 ---
 #
+# CCD-IMPORTER CONFIG
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ccd-importer
+  namespace: ccd
+data:
+  WAIT_HOSTS: 'ccd-user-profile-api, ccd-definition-store-api, service-auth-provider-api, ccd-api-gateway, idam-api'
+  VERBOSE: '${VERBOSE:-false}'
+  WAIT_HOSTS_TIMEOUT: '600'
+---
+#
 # IDAM-AUTHENTICATION-WEB
 #
 apiVersion: apps/v1
@@ -704,6 +717,26 @@ spec:
         - containerPort: 4660
           name: http
         imagePullPolicy: Always
+---
+#
+# CCD-IMPORTER
+#
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ccd-importer
+  namespace: ccd
+spec:
+  template:
+    spec:
+      containers:
+      - name: ccd-importer
+        image: hmctssandbox.azurecr.io/hmcts/bulk-scan-ccd-importer
+        envFrom:
+          - configMapRef:
+              name: ccd-importer
+      restartPolicy: Never
+  backoffLimit: 4
 ---
 #
 # DM-STORE SERVICE
