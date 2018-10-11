@@ -86,7 +86,6 @@ metadata:
   name: ccd-user-profile-api
   namespace: ccd
 data:
-  JAVA_OPTS: '-Xms128m -Xmx768m -Djava.security.egd=file:/dev/./urandom -XX:MaxMetaspaceSize=128m'
   USER_PROFILE_DB_HOST: 'shared-database'
   USER_PROFILE_DB_PORT: '5432'
   USER_PROFILE_DB_USERNAME: 'ccd_user_profile'
@@ -108,7 +107,6 @@ metadata:
   name: ccd-definition-store-api
   namespace: ccd
 data:
-  JAVA_OPTS: '-Xms128m -Xmx768m -Djava.security.egd=file:/dev/./urandom -XX:MaxMetaspaceSize=128m'
   DEFINITION_STORE_DB_HOST: 'shared-database'
   DEFINITION_STORE_DB_PORT: '5432'
   DEFINITION_STORE_DB_USERNAME: 'ccd_definition_store'
@@ -133,7 +131,6 @@ metadata:
   name: ccd-data-store-api
   namespace: ccd
 data:
-  JAVA_OPTS: '-Xms128m -Xmx768m -Djava.security.egd=file:/dev/./urandom -XX:MaxMetaspaceSize=128m'
   DATA_STORE_DB_HOST: 'shared-database'
   DATA_STORE_DB_PORT: '5432'
   DATA_STORE_DB_USERNAME: 'ccd_data_store'
@@ -198,7 +195,6 @@ metadata:
   name: dm-store
   namespace: ccd
 data:
-  JAVA_OPTS: '-Xms128m -Xmx768m -Djava.security.egd=file:/dev/./urandom -XX:MaxMetaspaceSize=128m'
   SERVER_PORT: '4460'
   SPRING_DATASOURCE_URL: 'jdbc:postgresql://shared-database:5432/evidence'
   SPRING_DATASOURCE_USERNAME: 'evidence'
@@ -706,7 +702,7 @@ spec:
         app: dm-store
     spec:
       containers:
-      - image: hmcts/dm-store:latest
+      - image: hmcts.azurecr.io/hmcts/dm-store:latest
         name: dm-store
         envFrom:
           - configMapRef:
@@ -722,6 +718,25 @@ spec:
         - containerPort: 4660
           name: http
         imagePullPolicy: Always
+---
+#
+# DM-STORE SERVICE
+#
+apiVersion: v1
+kind: Service
+metadata:
+  name: dm-store
+  namespace: ccd
+  labels:
+    app: dm-store
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 4660
+  selector:
+    app: dm-store
 ---
 #
 # CCD-IMPORTER
@@ -742,25 +757,6 @@ spec:
               name: ccd-importer
       restartPolicy: Never
   backoffLimit: 4
----
-#
-# DM-STORE SERVICE
-#
-apiVersion: v1
-kind: Service
-metadata:
-  name: dm-store
-  namespace: ccd
-  labels:
-    app: dm-store
-spec:
-  ports:
-    - name: http
-      protocol: TCP
-      port: 80
-      targetPort: 4660
-  selector:
-    app: dm-store
 ---
 #
 # SHARED-DATABASE
