@@ -441,13 +441,11 @@ spec:
         ports:
         - containerPort: 4453
           name: http
-        readinessProbe:
+        livenessProbe:
           httpGet:
-            port: 4453
             path: /health
+            port: 4453
           initialDelaySeconds: 60
-          successThreshold: 1
-          failureThreshold: 3
         imagePullPolicy: Always
 ---
 #
