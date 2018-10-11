@@ -426,7 +426,7 @@ spec:
         app: ccd-user-profile-api
     spec:
       containers:
-      - image: hmcts/ccd-user-profile-api:latest
+      - image: hmcts.azurecr.io/hmcts/ccd-user-profile-api:latest
         name: ccd-user-profile-api
         envFrom:
           - configMapRef:
@@ -486,7 +486,7 @@ spec:
         app: ccd-definition-store-api
     spec:
       containers:
-      - image: hmcts/ccd-definition-store-api:latest
+      - image: hmcts.azurecr.io/hmcts/ccd-definition-store-api:latest
         name: ccd-definition-store-api
         envFrom:
           - configMapRef:
@@ -541,7 +541,7 @@ spec:
         app: ccd-data-store-api
     spec:
       containers:
-      - image: hmcts/ccd-data-store-api:latest
+      - image: hmcts.azurecr.io/hmcts/ccd-data-store-api:latest
         name: ccd-data-store-api
         envFrom:
           - configMapRef:
@@ -596,7 +596,7 @@ spec:
         app: ccd-case-management-web
     spec:
       containers:
-      - image: hmcts/ccd-case-management-web:latest
+      - image: hmcts.azurecr.io/hmcts/ccd-case-management-web:latest
         name: ccd-case-management-web
         envFrom:
           - configMapRef:
@@ -651,7 +651,7 @@ spec:
         app: ccd-api-gateway
     spec:
       containers:
-      - image: hmcts/ccd-api-gateway:latest
+      - image: hmcts.azurecr.io/hmcts/ccd-api-gateway-web:latest
         name: ccd-api-gateway
         envFrom:
           - configMapRef:
