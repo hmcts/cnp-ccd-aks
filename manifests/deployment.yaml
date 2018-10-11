@@ -261,7 +261,7 @@ spec:
         app: idam-authentication-web
     spec:
       containers:
-      - image: hmctssandbox.azurecr.io/hmcts/idam-authentication-web
+      - image: docker.artifactory.reform.hmcts.net/auth/authentication-web:latest
         name: idam-authentication-web
         envFrom:
           - configMapRef:
@@ -316,7 +316,7 @@ spec:
         app: idam-api
     spec:
       containers:
-      - image: hmctssandbox.azurecr.io/hmcts/idam-api
+      - image: docker.artifactory.reform.hmcts.net/auth/idam-api
         name: idam-api
         envFrom:
           - configMapRef:
