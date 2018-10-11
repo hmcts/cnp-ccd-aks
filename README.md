@@ -11,7 +11,7 @@ The purpose of this project is twofold:
 This folder contains sample Dockerfiles for supporting applications, such as Postgres and ccd-importer.
 
 ### Manifests
-This contains raw Kubernetes manifests that should be deployable in their current state to any cluster (provided the cluster as access to the regisries)
+This contains raw Kubernetes manifests that should be deployable in their current state to any cluster (provided the cluster as access to the registries)
 
 ## To Do
 See the Github project: https://github.com/hmcts/cnp-ccd-aks/projects/1
