@@ -8,6 +8,27 @@ metadata:
   name: ccd
 ---
 #
+# SHARED-DATABASE CONFIG
+#
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shared-database-initdb
+  namespace: ccd
+data:
+  initdb.sql: |
+    CREATE USER idam WITH PASSWORD 'idam';
+    CREATE DATABASE idam WITH OWNER = idam ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+    CREATE USER ccd_user_profile WITH PASSWORD 'ccd_user_profile';
+    CREATE DATABASE ccd_user_profile WITH OWNER = ccd_user_profile ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+    CREATE USER ccd_definition_store WITH PASSWORD 'ccd_definition_store';
+    CREATE DATABASE ccd_definition_store WITH OWNER = ccd_definition_store ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+    CREATE USER ccd_data_store WITH PASSWORD 'ccd_data_store';
+    CREATE DATABASE ccd_data_store WITH OWNER = ccd_data_store ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+    CREATE USER evidence WITH PASSWORD 'evidence';
+    CREATE DATABASE evidence WITH OWNER = evidence ENCODING = 'UTF-8' CONNECTION LIMIT = -1;
+---
+#
 # IDAM-AUTHENTICATION-WEB CONFIG
 #
 apiVersion: v1
@@ -311,6 +332,12 @@ spec:
       labels:
         app: idam-api
     spec:
+      - name: init-wait-db
+        image: alpine
+        command: ["sh", "-c", "for i in $(seq 1 300); do nc -zvw1 shared-database 5432 && exit 0 || sleep 3; done; exit 1"]
+      - name: init-wait-smtp
+        image: alpine
+        command: ["sh", "-c", "for i in $(seq 1 300); do nc -zvw1 smtp-server 1025 && exit 0 || sleep 3; done; exit 1"]
       containers:
       - image: docker.artifactory.reform.hmcts.net/auth/idam-api
         name: idam-api
@@ -777,7 +804,7 @@ spec:
         app: shared-database
     spec:
       containers:
-      - image: hmctssandbox.azurecr.io/hmcts/ccd-postgres:10.5-alpine-v0.1
+      - image: postgres:10.5-alpine
         name: shared-database
         resources:
           requests:
@@ -790,6 +817,14 @@ spec:
         ports:
           - containerPort: 5432
             name: postgres
+        volumeMounts:
+        - mountPath: /docker-entrypoint-initdb.d
+          name: initdb
+          readOnly: true
+      volumes:
+      - name: initdb
+        configMap:
+          name: shared-database-initdb
 ---
 #
 # SHARED-DATABASE SERVICE
